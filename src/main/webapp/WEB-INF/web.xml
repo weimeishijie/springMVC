@@ -10,7 +10,7 @@
     <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
     <init-param>
       <param-name>contextConfigLocation</param-name>
-      <param-value>classpath:spring-*.xml</param-value>
+      <param-value></param-value>
     </init-param>
     <load-on-startup>1</load-on-startup>
   </servlet>
@@ -19,11 +19,60 @@
     <url-pattern>*.do</url-pattern>
   </servlet-mapping>
 
+
+  <!-- 使用工具类WebApplicationContextUtils就必须使用 ContextLoaderListener 初始化Spring容器。 -->
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+
+  <!-- spring容器初始化 -->
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:spring-*.xml</param-value>
+  </context-param>
+
+  <!-- filter过滤写入自己定义的类全名 -->
+  <filter>
+    <filter-name>acl</filter-name>
+    <filter-class>cn.tedu.note.filter.ACLFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>acl</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!-- 编码过滤配置 -->
+  <filter>
+    <filter-name>encodingFilter</filter-name>
+    <filter-class>
+      org.springframework.web.filter.CharacterEncodingFilter
+    </filter-class>
+    <init-param>
+      <param-name>encoding</param-name>
+      <param-value>UTF-8</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>encodingFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+
+  <!--
+    如果在spring-mvc.xml中DispatcherServlet拦截”/”，为了实现REST风格，拦截了所有的请求，
+        那么同时对.html,.js,*.jpg等静态文件的访问也就被拦截了。
+    要写在DispatcherServlet的前面， 让 defaultServlet先拦截请求，
+        这样请求就不会进入Spring了，我想性能是最好的吧。部分spring-mvc.xml tomcat默认的解决方法
+   -->
+  <!--<servlet-mapping>-->
+  <!--<servlet-name>default</servlet-name>-->
+  <!--<url-pattern>*.jsp</url-pattern>-->
+  <!--</servlet-mapping>-->
+
+  <!-- 初始页面 -->
   <welcome-file-list>
-    <!--<welcome-file>index.html</welcome-file>-->
-    <welcome-file>index.jsp</welcome-file>
-    <welcome-file>log_in.html</welcome-file>
-    <welcome-file>edit.html</welcome-file>
+    <welcome-file>log_in.jsp</welcome-file>
   </welcome-file-list>
 
 
